@@ -23,9 +23,14 @@ router.get('/:id', (req, res) => {
   // find one category by its `id` value
   // be sure to include its associated Products
   Category.findOne({
+    include: {
+			model: Product,
+			attributes: ['id', 'product_name', 'price', 'stock', 'category_id'],
+		},
     where: {
       id: req.params.id
-    }
+ }
+    
   })
     .then(dbCategoryData => {
       if (!dbCategoryData) {
@@ -40,19 +45,17 @@ router.get('/:id', (req, res) => {
     });
 });
 
-// router.post('/', (req, res) => {
-//   // create a new category
-//   Category.create({
-//     username: req.body.username,
-//     email: req.body.email,
-//     password: req.body.password
-//   })
-//     .then(dbCategoryData => res.json(dbCategoryData))
-//     .catch(err => {
-//       console.log(err);
-//       res.status(500).json(err);
-//     });
-// });
+router.post('/', (req, res) => {
+  // create a new category
+  Category.create({
+    category_name: req.body.category_name
+  })
+    .then(dbCategoryData => res.json(dbCategoryData))
+    .catch(err => {
+      console.log(err);
+      res.status(500).json(err);
+    });
+});
 
 
 router.put('/:id', (req, res) => {
@@ -60,6 +63,9 @@ router.put('/:id', (req, res) => {
   
     // if req.body has exact key/value pairs to match the model, you can just use `req.body` instead
     Category.update(req.body, {
+      
+        category_name: req.body.category_name,
+      
       where: {
         id: req.params.id
       }
